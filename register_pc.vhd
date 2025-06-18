@@ -1,0 +1,27 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+
+entity register_pc is
+port (
+      i_CLK : in std_logic;
+      i_DATA : in std_logic_vector(4 downto 0);
+      o_DATA : out std_logic_vector(4 downto 0)
+);
+
+end register_pc;
+
+architecture arch of register_pc is
+signal w_DATA : std_logic_vector(4 downto 0) := "00000";
+
+begin
+process(i_CLK)
+
+begin
+
+if (rising_edge(i_CLK)) then
+    w_DATA <= i_DATA;
+    end if;
+    end process;
+
+o_DATA <= w_DATA;
+end arch;
