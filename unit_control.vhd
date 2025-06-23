@@ -15,22 +15,38 @@ entity unit_control is
     );
 end unit_control;
 
-architecture structural of unit_control is
+architecture behavioral of unit_control is
     -- Sinais intermediários para cada tipo de instrução
     signal is_rtype, is_itype, is_load, is_store, is_branch : STD_LOGIC;
 begin
     
-    is_rtype  <= not opcode(6) and opcode(5) and opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
-    is_load   <= not opcode(6) and not opcode(5) and not opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
-    is_store  <= not opcode(6) and opcode(5) and not opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
-    is_branch <= opcode(6) and opcode(5) and not opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
-
+    -- Decodificação de opcodes usando apenas portas lógicas
+    -- R-type: opcode = "0110011"
+    is_rtype <= not opcode(6) and opcode(5) and opcode(4) and 
+                not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
+                
+    -- Load: opcode = "0000011"
+    is_load <= not opcode(6) and not opcode(5) and not opcode(4) and 
+               not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
+               
+    -- Store: opcode = "0100011"
+    is_store <= not opcode(6) and opcode(5) and not opcode(4) and 
+                not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
+                
+    -- Branch: opcode = "1100011"
+    is_branch <= opcode(6) and opcode(5) and not opcode(4) and 
+                 not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
+                 
+    -- I-type (arithmetic): opcode = "0010011"
+    is_itype <= not opcode(6) and not opcode(5) and opcode(4) and 
+                not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
    
-    -- RegWrite: ativo para R-type, load
-    RegWrite <= is_rtype or is_load;
+    -- Geração dos sinais de controle usando portas lógicas
+    -- RegWrite: ativo para R-type, I-type e load
+    RegWrite <= (is_rtype or is_itype) or is_load;
     
-    -- ALUSrc: ativo para load, store
-    ALUSrc <= is_load or is_store;
+    -- ALUSrc: ativo para load, store e I-type
+    ALUSrc <= (is_load or is_store) or is_itype;
     
     -- MemtoReg: ativo apenas para load
     MemtoReg <= is_load;
@@ -45,9 +61,9 @@ begin
     Branch <= is_branch;
     
     -- ALUOp:
-    -- "10" para R-type
-    -- "01" para branch
-    -- "00" para outros (load, store)
-    ALUOp(1) <= is_rtype;
+    -- Bit 1: '1' para R-type e I-type
+    ALUOp(1) <= is_rtype or is_itype;
+    
+    -- Bit 0: '1' para branch
     ALUOp(0) <= is_branch;
-end structural;
+end behavioral;
