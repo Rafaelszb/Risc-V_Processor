@@ -11,7 +11,7 @@ entity unit_control is
         MemWrite    : out STD_LOGIC;
         MemRead     : out STD_LOGIC;
         Branch      : out STD_LOGIC;
-        ALUOp       : out STD_LOGIC_VECTOR(1 downto 0)
+        ALUOp       : out STD_LOGIC_VECTOR(2 downto 0)
     );
 end unit_control;
 
@@ -61,8 +61,11 @@ begin
     Branch <= is_branch;
     
     -- ALUOp:
-    -- Bit 1: '1' para R-type e I-type
-    ALUOp(1) <= is_rtype or is_itype;
+       -- Bit 2: '2' para I-type
+    ALUOp(2) <= is_itype;
+
+    -- Bit 1: '1' para R-type
+    ALUOp(1) <= is_rtype;
     
     -- Bit 0: '1' para branch
     ALUOp(0) <= is_branch;
