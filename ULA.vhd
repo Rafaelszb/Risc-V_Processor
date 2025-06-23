@@ -4,11 +4,12 @@ use IEEE.numeric_std.all;
 
 entity ULA is
 port(
-     i_A: in std_logic_vector(31 downto 0);
-     i_B: in std_logic_vector(31 downto 0);
-	  i_SEL: in std_logic_vector(2 downto 0);
-	  i_CLK: in std_logic;
-     o_Q: out std_logic_vector(31 downto 0)
+    i_A: in std_logic_vector(31 downto 0);
+    i_B: in std_logic_vector(31 downto 0);
+	 i_SEL: in std_logic_vector(2 downto 0);
+	 i_CLK: in std_logic;
+	 o_Zero: out std_logic;
+    o_Q: out std_logic_vector(31 downto 0)
 );
 end ULA;
 
@@ -164,5 +165,14 @@ port map (
 	i_DATA => w_mux,
 	o_DATA => o_Q
 );
+
+process(w_Sub)
+begin
+    if signed(w_Sub) = 0 then
+        o_Zero <= '1';
+    else
+        o_Zero <= '0';
+    end if;
+end process;
 
 end arch;
