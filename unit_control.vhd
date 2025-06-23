@@ -19,13 +19,13 @@ architecture structural of unit_control is
     -- Sinais intermediários para cada tipo de instrução
     signal is_rtype, is_itype, is_load, is_store, is_branch : STD_LOGIC;
 begin
-    -- Decodificação do opcode usando portas AND
+    
     is_rtype  <= not opcode(6) and opcode(5) and opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
     is_load   <= not opcode(6) and not opcode(5) and not opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
     is_store  <= not opcode(6) and opcode(5) and not opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
     is_branch <= opcode(6) and opcode(5) and not opcode(4) and not opcode(3) and not opcode(2) and opcode(1) and opcode(0);
 
-    -- Geração dos sinais de controle
+   
     -- RegWrite: ativo para R-type, load
     RegWrite <= is_rtype or is_load;
     
