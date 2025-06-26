@@ -3,7 +3,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity unit_control is
     Port (
-        i_opcode      : in  STD_LOGIC_VECTOR(6 downto 0);
+        i_opcode      : in STD_LOGIC_VECTOR(6 downto 0);
+		  i_funct3      : in STD_LOGIC_VECTOR(2 downto 0);
         -- Sinais de controle de saída
         o_Jump        : out STD_LOGIC;
         o_RegWrite    : out STD_LOGIC;
@@ -11,7 +12,8 @@ entity unit_control is
         o_MemtoReg    : out STD_LOGIC;
         o_MemWrite    : out STD_LOGIC;
         o_MemRead     : out STD_LOGIC;
-        o_Branch      : out STD_LOGIC;
+        o_BNE         : out STD_LOGIC;
+        o_BEQ         : out STD_LOGIC;
         o_ALUOp       : out STD_LOGIC_VECTOR(1 downto 0)
     );
 end unit_control;
@@ -62,12 +64,12 @@ begin
     -- MemRead: ativo para load
     o_MemRead <= is_load;
     
-    -- Branch: ativo para branch
-    o_Branch <= is_branch;
-    
     -- Jump: ativo para jump
     o_Jump <= is_jump;
 
+	 o_BEQ <= is_branch and not i_funct3(2) and not i_funct3(1) and not i_funct3(0);
+	 o_BNE <= is_branch and not i_funct3(2) and not i_funct3(1) and i_funct3(0);
+	 
     -- ALUOp:
     -- Bit 1: '1' para R-type ou I-type
     o_ALUOp(1) <= is_rtype or is_itype;
