@@ -11,7 +11,7 @@ entity ULA_Control is
 end ULA_Control;
 
 architecture logic of ULA_Control is
-    signal is_ADD, is_SUB, is_AND, is_OR, is_XOR, is_BEQ, is_LOAD_STORE : STD_LOGIC;
+    signal is_ADD, is_SUB, is_AND, is_OR, is_XOR, is_BEQ : STD_LOGIC;
 begin
     -- Detecção das operações:
 
@@ -38,8 +38,8 @@ begin
 
     -- Lógica de saída (o_ALUControl):
     o_ALUControl(2) <= is_AND or is_OR or is_XOR;
-    o_ALUControl(1) <= is_OR or is_XOR;
-    o_ALUControl(0) <= (is_SUB or is_BEQ) and not (is_AND or is_OR or is_XOR);
+    o_ALUControl(1) <= is_XOR;
+    o_ALUControl(0) <= (is_SUB or is_BEQ or is_OR  );
 
     -- Observação: Se nenhum sinal estiver ativo, o padrão é "000" (ADD/LOAD/STORE)
 end logic;
