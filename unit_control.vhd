@@ -23,7 +23,7 @@ architecture behavioral of unit_control is
     signal is_rtype, is_itype, is_load, is_store, is_branch, is_jump : STD_LOGIC;
 begin
     
-    -- Decodificação de opcodes usando apenas portas lógicas
+    -- Decodificação de opcodes 
     -- R-type: opcode = "0110011"
     is_rtype <= not i_opcode(6) and i_opcode(5) and i_opcode(4) and 
                 not i_opcode(3) and not i_opcode(2) and i_opcode(1) and i_opcode(0);

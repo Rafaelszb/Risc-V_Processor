@@ -1,54 +1,37 @@
--- Quartus Prime VHDL Template
--- Single port RAM with single read/write address 
-
-library ieee;
-use ieee.std_logic_1164.all;
+library IEEE;
+use IEEE.STD_LOGIC_1164.all;
+use IEEE.NUMERIC_STD.all;
 
 entity data_memory is
+port ( i_clk: in std_logic;
+		 i_addr   : in std_logic_vector (31 downto 0);
+		 i_data : in std_logic_vector (31 downto 0);
+		 i_re   : in std_logic;
+		 i_we  : in std_logic;
+		 o_q : out std_logic_vector (31 downto 0));
+end data_memory;
 
-	generic 
-	(
-		DATA_WIDTH : natural := 32;
-		ADDR_WIDTH : natural := 32
-	);
+architecture arch_1 of data_memory is
 
-	port 
-	(
-		clk		: in std_logic;
-		addr	: in natural range 0 to 2**ADDR_WIDTH - 1;
-		data	: in std_logic_vector(31 downto 0);
-		we		: in std_logic := '1';
-		q		: out std_logic_vector((DATA_WIDTH -1) downto 0)
-	);
-
-end entity;
-
-architecture rtl of data_memory is
-
-	-- Build a 2-D array type for the RAM
-	subtype word_t is std_logic_vector((DATA_WIDTH-1) downto 0);
-	type memory_t is array(2**ADDR_WIDTH-1 downto 0) of word_t;
-
-	-- Declare the RAM signal.	
-	signal ram : memory_t;
-
-	-- Register to hold the address 
-	signal addr_reg : natural range 0 to 2**ADDR_WIDTH-1;
-
+	type RAM is array(0 to 255) of std_logic_vector(31 downto 0);
+	
+	signal w_Data_Memory : RAM := ((others=> (others=>'0')));
+	
 begin
-
-	process(clk)
+	
+	process (i_clk) 
 	begin
-	if(rising_edge(clk)) then
-		if(we = '1') then
-			ram(addr) <= data;
+		if(rising_edge(i_clk)) then
+			if (i_we = '1') then
+				w_Data_Memory((to_integer(unsigned(i_addr(7 downto 0))))) <= i_data;
+				
+			end if;
+			
+			if (i_re = '1') then
+				o_q <= w_Data_Memory((to_integer(unsigned(i_addr(7 downto 0)))));
+				
+			end if;
+			
 		end if;
-
-		-- Register the address for reading
-		addr_reg <= addr;
-	end if;
 	end process;
-
-	q <= ram(addr_reg);
-
-end rtl;
+end arch_1;
